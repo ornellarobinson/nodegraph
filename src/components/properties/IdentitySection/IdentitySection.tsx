@@ -55,7 +55,9 @@ export default function IdentitySection({ node, nodes, onUpdateName, autoFocus }
             slotProps={{
               htmlInput: {
                 maxLength: 25,
-                onFocus: (e: React.FocusEvent<HTMLInputElement>) => e.currentTarget.select(),
+                onFocus: autoFocus
+                  ? (e: React.FocusEvent<HTMLInputElement>) => e.currentTarget.select()
+                  : undefined,
               },
               inputLabel: { shrink: true, sx: { fontSize: 13 } },
             }}

@@ -215,7 +215,24 @@ describe("IdentitySection component", () => {
       expect(screen.getByDisplayValue("Alpha")).toHaveFocus();
     });
 
-    it("should select all text when the name input is focused", () => {
+    it("should select all text on focus when autoFocus is true", () => {
+      // given
+      const selectSpy = jest.spyOn(HTMLInputElement.prototype, "select");
+
+      render(<IdentitySection node={NODE} nodes={NODES} onUpdateName={jest.fn()} autoFocus />);
+
+      const input = screen.getByDisplayValue("Alpha");
+
+      // when
+      fireEvent.focus(input);
+
+      // then
+      expect(selectSpy).toHaveBeenCalled();
+
+      selectSpy.mockRestore();
+    });
+
+    it("should not select all text on focus when autoFocus is false", () => {
       // given
       const selectSpy = jest.spyOn(HTMLInputElement.prototype, "select");
 
@@ -227,7 +244,7 @@ describe("IdentitySection component", () => {
       fireEvent.focus(input);
 
       // then
-      expect(selectSpy).toHaveBeenCalled();
+      expect(selectSpy).not.toHaveBeenCalled();
 
       selectSpy.mockRestore();
     });
