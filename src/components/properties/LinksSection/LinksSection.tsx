@@ -12,6 +12,7 @@ import HubIcon from "@mui/icons-material/Hub";
 
 import type { NodeData, LinkData } from "@/types/index";
 import { getConnectedNodes } from "@/utils/getConnectedNodes";
+import { getLinkableNodes } from "@/utils/getLinkableNodes";
 import GradientButton from "@/components/ui/GradientButton";
 import { colors } from "@/theme/tokens";
 
@@ -115,7 +116,7 @@ export default function LinksSection({ node, nodes, links, onAddLink, onSelect }
 
       <Stack spacing={1}>
         <Autocomplete
-          options={nodes.filter((other) => other.id !== node.id)}
+          options={getLinkableNodes(node.id, nodes, links)}
           getOptionLabel={(option) => option.name}
           value={nodes.find((other) => other.id === linkTargetId) ?? null}
           onChange={(_, selected) => setLinkTargetId(selected?.id ?? "")}
