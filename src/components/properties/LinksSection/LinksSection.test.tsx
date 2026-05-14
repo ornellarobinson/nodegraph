@@ -182,6 +182,28 @@ describe("LinksSection component", () => {
     });
   });
 
+  describe("autocomplete search", () => {
+    it("should show a node when searching by ID", () => {
+      // given
+      render(
+        <LinksSection
+          node={NODE}
+          nodes={NODES}
+          links={[]}
+          onAddLink={jest.fn()}
+          onSelect={jest.fn()}
+        />,
+      );
+
+      // when
+      fireEvent.mouseDown(screen.getByRole("combobox"));
+      fireEvent.change(screen.getByRole("combobox"), { target: { value: "node-2" } });
+
+      // then
+      expect(screen.getByText("Gamma")).toBeInTheDocument();
+    });
+  });
+
   describe("node switch", () => {
     it("should show the correct connections after switching to a different node", () => {
       // given
