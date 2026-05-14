@@ -2,6 +2,8 @@
 
 A diagram editor for visualizing and managing large node networks, built with React, TypeScript, GoJS, and MUI.
 
+> 1 000 nodes · 96.58% test coverage · Accessibility 100 · Best Practices 100
+
 ![Main view — 1000 nodes, overview counter, node list](./docs/screenshot-main.png)
 
 ![Properties panel — node selected, identity and links sections](./docs/screenshot-panel.png)
@@ -34,8 +36,6 @@ The end user was a constant reference point throughout. Technical correctness wa
 Edge cases were handled with the same seriousness as core features: empty names, duplicate names, self-links, switching nodes while an edit is in progress, mobile tap behavior, the panel appearing mid-session. Each one was identified, handled, and tested.
 
 Beyond the core requirements, I proactively added features to improve the overall experience: a minimap for orientation in large graphs, an overview counter showing the live node and link count, a search input in the node list, and autofocus on the name field when a new node is added (the name is pre-selected so the user can type immediately without an extra click). These were not asked for but felt necessary to make the tool genuinely usable at 1 000 nodes.
-
-Each feature domain is isolated so it can be extracted into its own micro-frontend without cascading refactors — a constraint that mattered given the scale this tool is designed for.
 
 Design-wise, I drew inspiration from the BlueDolphin product, using their color palette and the dotted background pattern on the canvas to stay visually consistent with the brand context.
 
@@ -125,7 +125,7 @@ Tests follow the **given / when / then** structure with an empty line between ea
 - `operation` — state mutation patterns
 - `component` — React component rendering and interaction
 
-Coverage was checked with `jest --coverage` and reviewed line by line. The suite reaches **96.5% statements / 98.97% lines** across all tested files. The remaining gaps are deliberate:
+Coverage was checked with `jest --coverage` and reviewed line by line. The suite reaches **96.58% statements / 99% lines** across all tested files. The remaining gaps are deliberate:
 - `LinksSection` `renderOption` — MUI renders this inside a Popper portal that does not mount in the jsdom tree; testing it would require fighting the framework for UI-only render code.
 - `NodeList` scroll handler — requires real layout measurements that jsdom cannot provide.
 - `Logo` default parameter branch — not a meaningful code path.
@@ -174,7 +174,8 @@ Throughout the project I kept notes on decisions made, trade-offs considered, ed
 ### What was generated
 
 - **Layout algorithm selection** — consulted AI on the best geometric rendering approach for 1 000 nodes. ForceDirectedLayout was recommended over LayeredDigraphLayout and TreeLayout because the graph is undirected and the node relationships have no inherent hierarchy. The default parameters were then tuned (`defaultSpringLength: 180`, `defaultElectricalCharge: 600`) to prevent label overlap at that scale.
-- **Performance patterns** — `useTransition` for name update lag, the `requestAnimationFrame` retry pattern for zoom timing, the double-rAF sequencing for canvas link zoom.
+- **Performance patterns** — `useTransition` for name update lag, the `requestAnimationFrame` retry pattern for zoom timing.
+- **Node repositioning on link creation** — consulted AI on why nodes repositioned before the zoom could complete after a link was drawn. Identified that ForceDirectedLayout runs asynchronously after model changes, requiring a double `requestAnimationFrame`: repositioning in the first frame, zoom in the second.
 - **GoJS edge cases** — the StrictMode + GoJS div registry conflict; the `ChangedSelection(null)` touch-end race condition on mobile.
 - **Accessibility** — ARIA `listbox`/`option` pattern for `NodeList`, keyboard navigation (Enter, Space), `aria-label` on interactive inputs.
 - **Initial test cases** — the test structure and initial scenarios; each was reviewed individually.
