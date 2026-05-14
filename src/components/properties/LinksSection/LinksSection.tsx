@@ -119,7 +119,10 @@ export default function LinksSection({ node, nodes, links, onAddLink, onSelect }
           options={getLinkableNodes(node.id, nodes, links)}
           getOptionLabel={(option) => option.name}
           value={nodes.find((other) => other.id === linkTargetId) ?? null}
-          onChange={(_, selected) => setLinkTargetId(selected?.id ?? "")}
+          onChange={(_, selected) => {
+            setLinkTargetId(selected?.id ?? "");
+            if (selected) (document.activeElement as HTMLElement)?.blur();
+          }}
           filterOptions={filterOptions}
           size="small"
           noOptionsText="No node found"
@@ -139,6 +142,10 @@ export default function LinksSection({ node, nodes, links, onAddLink, onSelect }
                 "& .MuiAutocomplete-option": { alignItems: "flex-start" },
                 "& .MuiAutocomplete-noOptions": { fontSize: 12 },
               },
+            },
+            popper: {
+              placement: "top-start",
+              modifiers: [{ name: "flip", enabled: false }],
             },
           }}
           renderInput={(params) => (
