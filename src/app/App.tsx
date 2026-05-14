@@ -67,7 +67,7 @@ function App() {
   );
 
   return (
-    <main style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+    <main style={{ display: "flex", height: "100dvh", overflow: "hidden" }}>
       {/*
         Layout tiers:
           mobile  (<768px)   — both panels as drawers
@@ -84,7 +84,7 @@ function App() {
               <Box
                 sx={{
                   width: 300,
-                  height: "100vh",
+                  height: "100dvh",
                   flexShrink: 0,
                   bgcolor: "background.paper",
                   borderLeft: `1px solid ${colors.border}`,
@@ -172,20 +172,20 @@ function App() {
         )}
 
         <GradientButton
-          aria-label={isTablet ? undefined : "Add new node"}
-          onClick={addNode}
-          startIcon={isTablet ? <AddIcon /> : undefined}
-          sx={{
-            position: "absolute",
-            top: 16,
-            right: 16,
-            minWidth: { xs: 40, md: "auto" },
-            boxShadow: shadows.button,
-            zIndex: 10,
-          }}
-        >
-          {isTablet ? "New node" : <AddIcon />}
-        </GradientButton>
+            aria-label={isTablet ? undefined : "Add new node"}
+            onClick={addNode}
+            startIcon={isTablet ? <AddIcon /> : undefined}
+            sx={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              minWidth: { xs: 40, md: "auto" },
+              boxShadow: shadows.button,
+              zIndex: 10,
+            }}
+          >
+            {isTablet ? "New node" : <AddIcon />}
+          </GradientButton>
       </div>
     </main>
   );
