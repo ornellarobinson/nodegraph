@@ -152,12 +152,13 @@ Coverage was checked with `jest --coverage` and reviewed line by line. The suite
 
 Measured on the production build (`npm run build && npm run preview`) using Lighthouse in Chrome DevTools against `localhost:4173`. Dev-mode scores are not representative; only the production build reflects real-world performance.
 
-![Lighthouse report — performance 58, accessibility 100, best practices 100, SEO 91](./docs/lighthouse-report-resume.png)
+![Lighthouse report — performance 61, accessibility 100, best practices 100, SEO 91](./docs/lighthouse-report-resume.png)
 
-- **FCP 0.5 s / LCP 1.7 s / CLS 0 / Speed Index 2.1 s** — all green (thresholds: FCP < 1.8 s, LCP < 2.5 s, CLS < 0.1)
+- **FCP 0.5 s / LCP 1.7 s / CLS 0 / Speed Index 1.7 s** — all green (thresholds: FCP < 1.8 s, LCP < 2.5 s, CLS < 0.1)
 - **Accessibility 100 / Best Practices 100 / SEO 91**
-- **Performance score 58** — FCP, LCP, CLS, and Speed Index are all green; TBT alone pulls the score down.
-- **TBT 2,850 ms** (incognito, no extensions) — GoJS running ForceDirectedLayout on 1 000 nodes blocks the main thread on startup. `DiagramCanva` is lazy-loaded via `React.lazy`, splitting GoJS into a separate async chunk (`DiagramCa.js`, 268.6 KB) so the app shell renders without waiting for it. FCP improved from 0.8 s to 0.5 s as a result. The remaining blocking time is inherent to the scale and cannot be reduced further without offloading GoJS to a Web Worker (unsupported) or capping the initial node count. Chrome extensions inflate TBT in non-incognito runs; the incognito figure is the true baseline.
+- **Performance score 61** — FCP, LCP, CLS, and Speed Index are all green; TBT alone pulls the score down.
+- **TBT 3,110 ms** (incognito, no extensions) — GoJS running ForceDirectedLayout on 1 000 nodes blocks the main thread on startup. `DiagramCanva` is lazy-loaded via `React.lazy`, splitting GoJS into a separate async chunk (`DiagramCa.js`, 268.6 KB) so the app shell renders without waiting for it. FCP improved from 0.8 s to 0.5 s as a result. The remaining blocking time is inherent to the scale and cannot be reduced further without offloading GoJS to a Web Worker or capping the initial node count. Chrome extensions inflate TBT in non-incognito runs; the incognito figure is the true baseline.
+- **Speed Index 1.7 s** (was 2.1 s) — improved by switching `height: 100vh` to `height: 100dvh` on the main container. On mobile, `100vh` includes the browser URL bar, making the page slightly taller than the visible viewport and triggering continuous resize repaints as the URL bar shows and hides. `100dvh` (dynamic viewport height) tracks the actual visible area, eliminating those repaints.
 - **CLS** — fixed from 2.13 to 0. The PropertiesPanel previously only rendered on first selection, shifting the canvas by 300 px. Fix: always reserve the 300 px column with a placeholder — canvas width never changes.
 - **INP** — improved from 456 ms to under 200 ms by capping the link autocomplete to 8 visible options via `createFilterOptions({ limit: 8 })`. Without the cap, opening the dropdown rendered ~999 option nodes into the DOM in a single interaction. To keep the UX coherent, a placeholder ("Type a name or ID…") and helper text ("Type to search among all nodes") were added so users understand they should type to filter — not scroll through a truncated list.
 - **Google Fonts** — switched from `rel="stylesheet"` (render-blocking) to `rel="preload"` with the `onload` swap pattern.
@@ -201,7 +202,7 @@ These are my standards applied consistently to all code, including AI-generated 
 - **GoJS selection** — selecting a node in the diagram highlights it in the side panel, and selecting from the panel centers and zooms the diagram to that node. Both directions work correctly.
 - **Link creation** — tested from the panel (autocomplete) and from the canvas (drag from node border). Behavior is identical: the linked node is zoomed to, the panel stays open on the originating node.
 - **Adding a node** — new node is immediately selected in the diagram, scrolled into view in the side panel, and the properties panel opens ready to edit.
-- **Mobile** — panel opens on tap, closes via its own button. Canvas tap-away does not close it (GoJS fires `ChangedSelection(null)` on touch-end; the handler ignores it on non-desktop viewports).
+- **Mobile** — panel opens on tap, closes via its own button. Canvas tap-away does not close it (GoJS fires `ChangedSelection(null)` on touch-end; the handler ignores it on non-desktop viewports). The link autocomplete dismisses the keyboard on selection and its dropdown opens above the input so it is not hidden behind the virtual keyboard. Floating buttons (burger menu, Add node) reappear correctly after the properties drawer closes.
 - **Responsive layout** — tested at all three breakpoints in Chrome DevTools: mobile drawer, tablet inline, desktop inline. No layout shift or overflow at any tier.
 - **Performance at 1 000 nodes** — typing in the name field stays frame-accurate with no input lag; the node list scrolls smoothly; canvas pan and zoom are responsive throughout.
 - **The `useTransition` deferral** — confirmed the input stays responsive and the node list update follows without jank.
