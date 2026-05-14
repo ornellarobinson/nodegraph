@@ -39,6 +39,7 @@ export function useDiagramInit({
 
     const diagram = new go.Diagram(divRef.current, {
       "undoManager.isEnabled": true,
+      padding: new go.Margin(60),
       layout: new go.ForceDirectedLayout({
         defaultSpringLength: 180,
         defaultElectricalCharge: 600,
