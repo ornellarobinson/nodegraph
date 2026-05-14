@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-
 import {
   Autocomplete,
   Box,
@@ -16,7 +15,10 @@ import { getConnectedNodes } from "@/utils/getConnectedNodes";
 import GradientButton from "@/components/ui/GradientButton";
 import { colors } from "@/theme/tokens";
 
-const filterOptions = createFilterOptions<NodeData>({ limit: 8 });
+const filterOptions = createFilterOptions<NodeData>({
+  limit: 8,
+  stringify: (option) => `${option.name} ${option.id}`,
+});
 
 type Props = {
   node: NodeData;
