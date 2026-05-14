@@ -1,5 +1,6 @@
 import { useRef, useState, useCallback, useLayoutEffect, useEffect, memo } from "react";
 import { Box, Typography } from "@mui/material";
+
 import type { NodeData } from "@/types/index";
 import { colors } from "@/theme/tokens";
 

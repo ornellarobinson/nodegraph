@@ -3,6 +3,7 @@ import { Box, Divider, IconButton, InputAdornment, TextField, Typography } from 
 import SearchIcon from "@mui/icons-material/Search";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import CloseIcon from "@mui/icons-material/Close";
+
 import type { NodeData, LinkData } from "@/types/index";
 import NodeList from "@/features/nodes/NodeList";
 import Logo from "@/components/ui/Logo";

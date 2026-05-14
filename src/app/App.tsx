@@ -7,9 +7,9 @@ import SidePanel from "@/components/sidepanel/SidePanel";
 import PropertiesPanel from "@/components/properties/PropertiesPanel";
 import GradientButton from "@/components/ui/GradientButton";
 import { colors, shadows } from "@/theme/tokens";
+import { useGraphState } from "./hooks/useGraphState";
 
 const DiagramCanva = lazy(() => import("@/features/diagram/DiagramCanva"));
-import { useGraphState } from "./hooks/useGraphState";
 
 function App() {
   const {
