@@ -18,8 +18,8 @@ export const colors = {
   // Text hierarchy
   textPrimary: "#1a1a1a",
   textSecondary: "#767676",
-  textCaption: "#8888aa",
-  textMuted: "#b0b0b8",
+  textCaption: "#6b6b89",
+  textMuted: "#767676",
   textDisabled: "#c0c0c8",
 
   // Surfaces
