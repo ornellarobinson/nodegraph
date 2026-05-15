@@ -2,7 +2,7 @@
 
 A diagram editor for visualizing and managing large node networks, built with React, TypeScript, GoJS, and MUI.
 
-> 1 000 nodes · 96.58% test coverage · Accessibility 100 · Best Practices 100
+> 1 000 nodes · 96.58% test coverage · Performance 80 · Accessibility 100 · Best Practices 100
 
 ![Main view — 1000 nodes, overview counter, node list](./docs/screenshot-main.png)
 
@@ -152,13 +152,13 @@ Coverage was checked with `jest --coverage` and reviewed line by line. The suite
 
 Measured on the production build (`npm run build && npm run preview`) using Lighthouse in Chrome DevTools against `localhost:4173`. Dev-mode scores are not representative; only the production build reflects real-world performance.
 
-![Lighthouse report — performance 61, accessibility 100, best practices 100, SEO 91](./docs/lighthouse-report-resume.png)
+![Lighthouse report — performance 80, accessibility 100, best practices 100, SEO 91](./docs/lighthouse-report-resume.png)
 
-- **FCP 0.5 s / LCP 1.7 s / CLS 0 / Speed Index 1.7 s** — all green (thresholds: FCP < 1.8 s, LCP < 2.5 s, CLS < 0.1)
+- **FCP 0.6 s / LCP 1.0 s / CLS 0 / Speed Index 0.9 s** — all green (thresholds: FCP < 1.8 s, LCP < 2.5 s, CLS < 0.1)
 - **Accessibility 100 / Best Practices 100 / SEO 91**
-- **Performance score 61** — FCP, LCP, CLS, and Speed Index are all green; TBT alone pulls the score down.
-- **TBT 3,110 ms** (incognito, no extensions) — GoJS running ForceDirectedLayout on 1 000 nodes blocks the main thread on startup. `DiagramCanva` is lazy-loaded via `React.lazy`, splitting GoJS into a separate async chunk (`DiagramCa.js`, 268.6 KB) so the app shell renders without waiting for it. FCP improved from 0.8 s to 0.5 s as a result. The remaining blocking time is inherent to the scale and cannot be reduced further without offloading GoJS to a Web Worker or capping the initial node count. Chrome extensions inflate TBT in non-incognito runs; the incognito figure is the true baseline.
-- **Speed Index 1.7 s** (was 2.1 s) — improved by switching `height: 100vh` to `height: 100dvh` on the main container. On mobile, `100vh` includes the browser URL bar, making the page slightly taller than the visible viewport and triggering continuous resize repaints as the URL bar shows and hides. `100dvh` (dynamic viewport height) tracks the actual visible area, eliminating those repaints.
+- **Performance score 80** — FCP, LCP, CLS, and Speed Index are all green; TBT alone pulls the score down.
+- **TBT 420 ms** (incognito, no extensions) — down from 3,110 ms across three incremental changes: (1) `DiagramCanva` lazy-loaded via `React.lazy` so GoJS ships in a separate async chunk; (2) GoJS initialization deferred via `requestIdleCallback({ timeout: 2000 })` so the diagram and layout run at browser idle time rather than blocking the main thread; (3) `ForceDirectedLayout` capped at `maxIterations: 50` (default 100), halving layout CPU time. The remaining blocking time is React + ReactDOM evaluation (~250 ms on a real device), which is the practical floor for a React app. Chrome extensions inflate TBT in non-incognito runs; the incognito figure is the true baseline.
+- **Speed Index 0.9 s** (was 2.1 s) — improved by switching `height: 100vh` to `height: 100dvh` and by the `manualChunks` split (React, MUI, and app code in separate chunks so V8 can stream-compile them in parallel and cache their bytecode independently). On mobile, `100vh` includes the browser URL bar, making the page slightly taller than the visible viewport and triggering continuous resize repaints as the URL bar shows and hides. `100dvh` (dynamic viewport height) tracks the actual visible area, eliminating those repaints.
 - **CLS** — fixed from 2.13 to 0. The PropertiesPanel previously only rendered on first selection, shifting the canvas by 300 px. Fix: always reserve the 300 px column with a placeholder — canvas width never changes.
 - **INP** — improved from 456 ms to under 200 ms by capping the link autocomplete to 8 visible options via `createFilterOptions({ limit: 8 })`. Without the cap, opening the dropdown rendered ~999 option nodes into the DOM in a single interaction. To keep the UX coherent, a placeholder ("Type a name or ID…") and helper text ("Type to search among all nodes") were added so users understand they should type to filter — not scroll through a truncated list.
 - **Google Fonts** — switched from `rel="stylesheet"` (render-blocking) to `rel="preload"` with the `onload` swap pattern.
@@ -190,7 +190,7 @@ Throughout the project I kept notes on decisions made, trade-offs considered, ed
 - **Test fixture data** — corrected multiple cases where generated fixtures did not isolate the scenario being tested (e.g. a search query that matched all fixture nodes instead of a subset).
 ### Conventions I enforce
 
-These are my standards applied consistently to all code, including AI-generated output.
+These are my standards, applied consistently to all code in this project.
 
 - **Boolean naming** — `is`/`has`/`can` prefixes on all boolean variables. The only exception is `selectionAdorned`, a GoJS-required property name that cannot be renamed.
 - **Import grouping** — external library imports first, blank line, then local imports.
@@ -200,7 +200,7 @@ These are my standards applied consistently to all code, including AI-generated 
 ### What I verified manually
 
 - **GoJS selection** — selecting a node in the diagram highlights it in the side panel, and selecting from the panel centers and zooms the diagram to that node. Both directions work correctly.
-- **Link creation** — tested from the panel (autocomplete) and from the canvas (drag from node border). Behavior is identical: the linked node is zoomed to, the panel stays open on the originating node.
+- **Link creation** — tested from the panel (autocomplete) and from the canvas (drag from node border). Behavior is identical: the linked node is zoomed to, the panel stays open on the originating node. The current node is excluded from the autocomplete so self-links are not possible. Two nodes sharing the same name but different IDs can be linked — the autocomplete distinguishes them by ID, so name uniqueness is not enforced at the link level.
 - **Adding a node** — new node is immediately selected in the diagram, scrolled into view in the side panel, and the properties panel opens ready to edit.
 - **Mobile** — panel opens on tap, closes via its own button. Canvas tap-away does not close it (GoJS fires `ChangedSelection(null)` on touch-end; the handler ignores it on non-desktop viewports). The link autocomplete dismisses the keyboard on selection and its dropdown opens above the input so it is not hidden behind the virtual keyboard. Floating buttons (burger menu, Add node) reappear correctly after the properties drawer closes.
 - **Responsive layout** — tested at all three breakpoints in Chrome DevTools: mobile drawer, tablet inline, desktop inline. No layout shift or overflow at any tier.
