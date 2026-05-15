@@ -14,7 +14,7 @@ describe("getLinkableNodes utility", () => {
     const result = getLinkableNodes("node-0", NODES, []);
 
     // then
-    expect(result.find((n) => n.id === "node-0")).toBeUndefined();
+    expect(result.find((node) => node.id === "node-0")).toBeUndefined();
   });
 
   it("should return all other nodes when there are no links", () => {
@@ -33,7 +33,7 @@ describe("getLinkableNodes utility", () => {
     const result = getLinkableNodes("node-0", NODES, links);
 
     // then
-    expect(result.find((n) => n.id === "node-1")).toBeUndefined();
+    expect(result.find((node) => node.id === "node-1")).toBeUndefined();
   });
 
   it("should exclude a node already connected in the reverse direction", () => {
@@ -44,7 +44,7 @@ describe("getLinkableNodes utility", () => {
     const result = getLinkableNodes("node-0", NODES, links);
 
     // then
-    expect(result.find((n) => n.id === "node-1")).toBeUndefined();
+    expect(result.find((node) => node.id === "node-1")).toBeUndefined();
   });
 
   it("should return unconnected nodes when some links exist", () => {
@@ -55,8 +55,8 @@ describe("getLinkableNodes utility", () => {
     const result = getLinkableNodes("node-0", NODES, links);
 
     // then
-    expect(result.find((n) => n.id === "node-2")).toBeDefined();
-    expect(result.find((n) => n.id === "node-3")).toBeDefined();
+    expect(result.find((node) => node.id === "node-2")).toBeDefined();
+    expect(result.find((node) => node.id === "node-3")).toBeDefined();
   });
 
   it("should return an empty array when all other nodes are already connected", () => {
