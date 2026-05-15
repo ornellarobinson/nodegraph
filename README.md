@@ -2,7 +2,8 @@
 
 A diagram editor for visualizing and managing large node networks, built with React, TypeScript, GoJS, and MUI.
 
-> 1 000 nodes · 96.58% test coverage · Performance 80 · Accessibility 100 · Best Practices 100
+1000 nodes dataset : 
+> 96.58% test coverage · Performance 80 (Lighthouse, production build) · Accessibility 100 · Best Practices 100
 
 ![Main view — 1000 nodes, overview counter, node list](./docs/screenshot-main.png)
 
@@ -15,6 +16,7 @@ A diagram editor for visualizing and managing large node networks, built with Re
 Requires **Node.js 20.19+ or 22.12+** (Vite 8 constraint).
 
 ```bash
+nvm use
 npm install
 npm run dev       # dev server
 npm run test      # jest test suite
@@ -168,7 +170,7 @@ Measured on the production build (`npm run build && npm run preview`) using Ligh
 
 ## AI usage
 
-I treat AI as a developer colleague, with me as the lead. I worked with Claude (Claude Code) throughout this project: I identified the constraints, brought the problems, and reviewed every output before it shipped. What follows is an honest account of what that looked like in practice.
+I treat AI as a collaborator, with me as the lead. I worked with Claude (Claude Code) throughout this project: I identified the constraints, brought the problems, and reviewed every output before it shipped. What follows is an honest account of what that looked like in practice.
 
 Throughout the project I kept notes on decisions made, trade-offs considered, edge cases encountered, and performance observations. Those notes — not AI prompts — were the source of truth. I shared them with Claude to help structure and articulate them into the README, then reviewed and edited every section. The same pattern applied to implementation: I identified the problem or constraint first, then worked with Claude to explore solutions.
 
@@ -208,4 +210,5 @@ These are my standards, applied consistently to all code in this project.
 - **The `useTransition` deferral** — confirmed the input stays responsive and the node list update follows without jank.
 - **Autofocus on new node** — confirmed the name field receives focus immediately on node creation, with the text pre-selected so the user can type without an extra click.
 - **The duplicate name warning** — confirmed no flash on node switch with the `key={node.id}` approach.
+- **Scalability stress test (initial node load)** — manually tested diagram initialization with 2000, 5000, 8000, and 10000 nodes as starting datasets. GoJS diagram initialization time increases as the number of nodes increases, but the diagram remains stable across all loads with no crashes or blocking behavior.
 - **Web Core Vitals** — measured on the production build; see [Performance](#performance) above.
