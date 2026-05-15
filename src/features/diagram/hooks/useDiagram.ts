@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import * as go from "gojs";
 
 import type { NodeData, LinkData } from "@/types/index";
@@ -33,6 +33,7 @@ export function useDiagram({
   const isInternalChange = useRef(false);
   const nameMapRef = useRef<Map<string, string>>(new Map());
   const lastAddedNodeIdRef = useRef<string | null>(null);
+  const [isDiagramReady, setIsDiagramReady] = useState(false);
 
   useDiagramInit({
     divRef,
@@ -41,10 +42,11 @@ export function useDiagram({
     isInternalChange,
     onSelectionChange,
     onAddLink,
+    onReady: () => setIsDiagramReady(true),
   });
-  useDiagramStructure({ nodes, links, diagramRef, nameMapRef, lastAddedNodeIdRef });
+  useDiagramStructure({ nodes, links, diagramRef, nameMapRef, lastAddedNodeIdRef, isDiagramReady });
   useDiagramNames({ nodes, diagramRef, nameMapRef });
-  useDiagramSelection({ selectedNodeId, diagramRef, isInternalChange, linksLength: links.length });
+  useDiagramSelection({ selectedNodeId, diagramRef, isInternalChange, linksLength: links.length, isDiagramReady });
 
   return { divRef, overviewRef };
 }

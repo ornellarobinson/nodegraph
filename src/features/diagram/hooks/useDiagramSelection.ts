@@ -10,6 +10,7 @@ type Props = {
   diagramRef: React.MutableRefObject<go.Diagram | null>;
   isInternalChange: React.MutableRefObject<boolean>;
   linksLength: number;
+  isDiagramReady: boolean;
 };
 
 export function useDiagramSelection({
@@ -17,6 +18,7 @@ export function useDiagramSelection({
   diagramRef,
   isInternalChange,
   linksLength,
+  isDiagramReady,
 }: Props): void {
   const prevSelectedNodeIdRef = useRef<string | null | undefined>(undefined);
 
@@ -75,5 +77,5 @@ export function useDiagramSelection({
     }
 
     isInternalChange.current = false;
-  }, [selectedNodeId, linksLength]);
+  }, [selectedNodeId, linksLength, isDiagramReady]);
 }

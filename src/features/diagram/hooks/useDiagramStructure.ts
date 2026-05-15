@@ -11,6 +11,7 @@ type Props = {
   diagramRef: React.MutableRefObject<go.Diagram | null>;
   nameMapRef: React.MutableRefObject<Map<string, string>>;
   lastAddedNodeIdRef: React.MutableRefObject<string | null>;
+  isDiagramReady: boolean;
 };
 
 export function useDiagramStructure({
@@ -19,6 +20,7 @@ export function useDiagramStructure({
   diagramRef,
   nameMapRef,
   lastAddedNodeIdRef,
+  isDiagramReady,
 }: Props): void {
   useEffect(() => {
     const diagram = diagramRef.current;
@@ -130,5 +132,5 @@ export function useDiagramStructure({
       diagram.layout.isOngoing = false;
       diagram.zoomToFit();
     }
-  }, [nodes.length, links.length]);
+  }, [nodes.length, links.length, isDiagramReady]);
 }

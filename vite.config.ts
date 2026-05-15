@@ -9,6 +9,16 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("react") || id.includes("react-dom")) return "react";
+          if (id.includes("@mui") || id.includes("@emotion")) return "mui";
+        },
+      },
+    },
+  },
   test: {
     environment: "node",
   },
